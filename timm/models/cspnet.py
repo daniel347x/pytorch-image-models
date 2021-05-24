@@ -242,7 +242,7 @@ class CrossStage(nn.Module):
                  block_fn=ResBottleneck, **block_kwargs):
         super(CrossStage, self).__init__()
 
-        print(f'***\nCreating CrossStage with in_chs {in_chs}, out_chs {out_chs}\n***')
+        # print(f'***\nCreating CrossStage with in_chs {in_chs}, out_chs {out_chs}\n***')
 
         first_dilation = first_dilation or dilation
         down_chs = out_chs if down_growth else in_chs  # grow downsample channels to output channels
@@ -478,14 +478,14 @@ class CspNetTiny(nn.Module):
                     m.zero_init_last_bn()
 
     def forward_features(self, x):
-        print(f'***\nINCOMING: x.shape {x.shape}\n***')
+        # print(f'***\nINCOMING: x.shape {x.shape}\n***')
         x = self.stem(x)
-        print(f'***\nSTEM output: x.shape {x.shape}\n***')
+        # print(f'***\nSTEM output: x.shape {x.shape}\n***')
         features = []
         for i in range(4):
-            print(f'***\nSTAGE {i} INPUT: x.shape {x.shape}\n***')
+            # print(f'***\nSTAGE {i} INPUT: x.shape {x.shape}\n***')
             x = self.stages[i](x)
-            print(f'***\nSTAGE {i} OUTPUT: x.shape {x.shape}\n***')
+            # print(f'***\nSTAGE {i} OUTPUT: x.shape {x.shape}\n***')
             features.append(x)
         return features
 
