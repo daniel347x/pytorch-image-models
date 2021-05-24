@@ -405,6 +405,69 @@ class CspNet(nn.Module):
         x = self.head(x)
         return x
 
+class CspNetTiny(nn.Module):
+    """Cross Stage Partial base model.
+
+    Paper: `CSPNet: A New Backbone that can Enhance Learning Capability of CNN` - https://arxiv.org/abs/1911.11929
+    Ref Impl: https://github.com/WongKinYiu/CrossStagePartialNetworks
+
+    NOTE: There are differences in the way I handle the 1x1 'expansion' conv in this impl vs the
+    darknet impl. I did it this way for simplicity and less special cases.
+    """
+
+    def __init__(self, cfg, in_chans=3, num_classes=1000, output_stride=32, global_pool='avg', drop_rate=0.,
+                 act_layer=nn.LeakyReLU, norm_layer=nn.BatchNorm2d, aa_layer=None, drop_path_rate=0.,
+                 zero_init_last_bn=True, stage_fn=CrossStage, block_fn=ResBottleneck):
+        super().__init__()
+        self.num_classes = num_classes
+        self.drop_rate = drop_rate
+        assert output_stride in (8, 16, 32)
+        layer_args = dict(act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer)
+
+        # Construct the stem
+        self.stem, stem_feat_info = create_stem(in_chans, **cfg['stem'], **layer_args)
+        self.feature_info = [stem_feat_info]
+        prev_chs = stem_feat_info['num_chs']
+        curr_stride = stem_feat_info['reduction']  # reduction does not include pool
+        if cfg['stem']['pool']:
+            curr_stride *= 2
+
+        # Construct the stages
+        per_stage_args = _cfg_to_stage_args(
+            cfg['stage'], curr_stride=curr_stride, output_stride=output_stride, drop_path_rate=drop_path_rate)
+        self.stages = nn.Sequential()
+        for i, sa in enumerate(per_stage_args):
+            self.stages.add_module(
+                str(i), stage_fn(prev_chs, **sa, **layer_args, block_fn=block_fn))
+            prev_chs = sa['out_chs']
+            curr_stride *= sa['stride']
+            self.feature_info += [dict(num_chs=prev_chs, reduction=curr_stride, module=f'stages.{i}')]
+
+        self.num_features = prev_chs
+
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.ones_(m.weight)
+                nn.init.zeros_(m.bias)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, mean=0.0, std=0.01)
+                nn.init.zeros_(m.bias)
+        if zero_init_last_bn:
+            for m in self.modules():
+                if hasattr(m, 'zero_init_last_bn'):
+                    m.zero_init_last_bn()
+
+    def forward_features(self, x):
+        x = self.stem(x)
+        x = self.stages(x)
+        return x
+
+    def forward(self, x):
+        x = self.forward_features(x)
+        return x
+
 
 def _create_cspnet(variant, pretrained=False, **kwargs):
     cfg_variant = variant.split('_')[0]
