@@ -428,7 +428,7 @@ class CspNetTiny(nn.Module):
     darknet impl. I did it this way for simplicity and less special cases.
     """
 
-    def __init__(self, cfg, in_chans=3, num_classes=1000, output_stride=32, global_pool='avg', drop_rate=0.,
+    def __init__(self, cfg, in_chans=1, num_classes=1000, output_stride=32, global_pool='avg', drop_rate=0.,
                  act_layer=nn.LeakyReLU, norm_layer=nn.BatchNorm2d, aa_layer=None, drop_path_rate=0.,
                  zero_init_last_bn=True, stage_fn=CrossStage, block_fn=ResBottleneck):
         super().__init__()
