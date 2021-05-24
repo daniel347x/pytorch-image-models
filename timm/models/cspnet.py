@@ -126,7 +126,7 @@ model_cfgs = dict(
         )
     ),
     cspdarknet53_modified=dict(
-        stem=dict(out_chs=intrim_dim, kernel_size=3, stride=1, pool=''),
+        stem=dict(out_chs=32, kernel_size=3, stride=1, pool=''),
         stage=dict(
             out_chs=(64, 128, 256),
             depth=(1, 4, 4),
