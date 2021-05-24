@@ -151,6 +151,7 @@ def create_stem(
     in_c = in_chans
     for i, out_c in enumerate(out_chs):
         conv_name = f'conv{i + 1}'
+        print(f'***\nCreating ConvBnAct with in_c {in_c}, out_c {out_c}\n***')
         stem.add_module(conv_name, ConvBnAct(
             in_c, out_c, kernel_size, stride=stride if i == 0 else 1,
             act_layer=act_layer, norm_layer=norm_layer))
