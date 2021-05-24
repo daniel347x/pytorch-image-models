@@ -151,7 +151,7 @@ def create_stem(
     in_c = in_chans
     for i, out_c in enumerate(out_chs):
         conv_name = f'conv{i + 1}'
-        print(f'***\nCreating ConvBnAct with in_c {in_c}, out_c {out_c}\n***')
+        # print(f'***\nCreating ConvBnAct with in_c {in_c}, out_c {out_c}\n***')
         stem.add_module(conv_name, ConvBnAct(
             in_c, out_c, kernel_size, stride=stride if i == 0 else 1,
             act_layer=act_layer, norm_layer=norm_layer))
@@ -439,6 +439,7 @@ class CspNetTiny(nn.Module):
         layer_args = dict(act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer)
 
         # Construct the stem
+        print(f'***\nCalling create_stem with in_chans {in_chans}\n***')
         self.stem, stem_feat_info = create_stem(in_chans, **cfg['stem'], **layer_args)
         self.feature_info = [stem_feat_info]
         prev_chs = stem_feat_info['num_chs']
@@ -537,4 +538,5 @@ def darknet53(pretrained=False, **kwargs):
 @register_model
 def cspdarknet53_yolo(pretrained=False, **kwargs):
     norm_layer = get_norm_act_layer('iabn')
+    print(f'***\nCreating CSPNet with kwargs {kwargs}\n***')
     return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
