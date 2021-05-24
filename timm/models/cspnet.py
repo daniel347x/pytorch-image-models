@@ -476,8 +476,11 @@ class CspNetTiny(nn.Module):
 
     def forward_features(self, x):
         x = self.stem(x)
-        x = self.stages(x)
-        return x
+        features = []
+        for i in range(3):
+            x = self.stages(x)
+            features.append(x)
+        return features
 
     def forward(self, x):
         x = self.forward_features(x)
