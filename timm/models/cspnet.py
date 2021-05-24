@@ -482,7 +482,7 @@ class CspNetTiny(nn.Module):
         x = self.stem(x)
         print(f'***\nSTEM output: x.shape {x.shape}\n***')
         features = []
-        for i in range(3):
+        for i in range(4):
             print(f'***\nSTAGE {i} INPUT: x.shape {x.shape}\n***')
             x = self.stages[i](x)
             print(f'***\nSTAGE {i} OUTPUT: x.shape {x.shape}\n***')
