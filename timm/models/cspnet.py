@@ -124,7 +124,19 @@ model_cfgs = dict(
             bottle_ratio=(0.5,) * 5,
             block_ratio=(1.,) * 5,
         )
-    )
+    ),
+    cspdarknet53_modified=dict(
+        stem=dict(out_chs=intrim_dim, kernel_size=3, stride=1, pool=''),
+        stage=dict(
+            out_chs=(64, 128, 256),
+            depth=(1, 4, 4),
+            stride=(2,) * 3,
+            exp_ratio=(2.,) + (1.,) * 2,
+            bottle_ratio=(0.5,) + (1.0,) * 2,
+            block_ratio=(1.,) + (0.5,) * 2,
+            down_growth=True,
+        )
+    ),
 )
 
 
@@ -405,7 +417,6 @@ class CspNet(nn.Module):
         x = self.head(x)
         return x
 
-@register_model
 class CspNetTiny(nn.Module):
     """Cross Stage Partial base model.
 
@@ -418,7 +429,7 @@ class CspNetTiny(nn.Module):
 
     def __init__(self, cfg, in_chans=3, num_classes=1000, output_stride=32, global_pool='avg', drop_rate=0.,
                  act_layer=nn.LeakyReLU, norm_layer=nn.BatchNorm2d, aa_layer=None, drop_path_rate=0.,
-                 zero_init_last_bn=True, stage_fn=CrossStage, block_fn=ResBottleneck, pretrained=False):
+                 zero_init_last_bn=True, stage_fn=CrossStage, block_fn=ResBottleneck):
         super().__init__()
         self.num_classes = num_classes
         self.drop_rate = drop_rate
@@ -519,3 +530,9 @@ def cspdarknet53_iabn(pretrained=False, **kwargs):
 @register_model
 def darknet53(pretrained=False, **kwargs):
     return _create_cspnet('darknet53', pretrained=pretrained, block_fn=DarkBlock, stage_fn=DarkStage, **kwargs)
+
+
+@register_model
+def cspdarknet53_yolo(pretrained=False, **kwargs):
+    norm_layer = get_norm_act_layer('iabn')
+    return _create_cspnet('cspdarknet53_modified', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
