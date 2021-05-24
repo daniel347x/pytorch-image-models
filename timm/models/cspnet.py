@@ -242,6 +242,9 @@ class CrossStage(nn.Module):
                  groups=1, first_dilation=None, down_growth=False, cross_linear=False, block_dpr=None,
                  block_fn=ResBottleneck, **block_kwargs):
         super(CrossStage, self).__init__()
+
+        print(f'***\nCreating CrossStage with in_chs {in_chs}, out_chs {out_chs}\n***')
+
         first_dilation = first_dilation or dilation
         down_chs = out_chs if down_growth else in_chs  # grow downsample channels to output channels
         exp_chs = int(round(out_chs * exp_ratio))
@@ -275,6 +278,7 @@ class CrossStage(nn.Module):
         self.conv_transition = ConvBnAct(exp_chs, out_chs, kernel_size=1, **conv_kwargs)
 
     def forward(self, x):
+        print(f'***\nEntering CrossStage with shape {x.shape}\n***')
         if self.conv_down is not None:
             x = self.conv_down(x)
         x = self.conv_exp(x)
@@ -283,6 +287,7 @@ class CrossStage(nn.Module):
         xb = self.blocks(xb)
         xb = self.conv_transition_b(xb).contiguous()
         out = self.conv_transition(torch.cat([xs, xb], dim=1))
+        print(f'***\nExiting CrossStage with shape {out.shape}\n***')
         return out
 
 
