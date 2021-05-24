@@ -488,7 +488,9 @@ class CspNetTiny(nn.Module):
         return features
 
     def forward(self, x):
+        print(f'Entering FORWARD')
         x = self.forward_features(x)
+        print(f'Exiting FORWARD')
         return x
 
 
