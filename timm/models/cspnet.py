@@ -405,6 +405,7 @@ class CspNet(nn.Module):
         x = self.head(x)
         return x
 
+@register_model
 class CspNetTiny(nn.Module):
     """Cross Stage Partial base model.
 
