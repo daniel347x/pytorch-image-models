@@ -440,7 +440,7 @@ class CspNetTiny(nn.Module):
         self.num_classes = num_classes
         self.drop_rate = drop_rate
         assert output_stride in (8, 16, 32)
-        layer_args = dict(act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer, attn_layer=True)
+        layer_args = dict(act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer)
 
         # Construct the stem
         self.stem, stem_feat_info = create_stem(in_chans, **cfg['stem'], **layer_args)
@@ -456,7 +456,7 @@ class CspNetTiny(nn.Module):
         self.stages = nn.Sequential()
         for i, sa in enumerate(per_stage_args):
             self.stages.add_module(
-                str(i), stage_fn(prev_chs, **sa, **layer_args, block_fn=block_fn))
+                str(i), stage_fn(prev_chs, attn_layer=True, **sa, **layer_args, block_fn=block_fn))
             prev_chs = sa['out_chs']
             curr_stride *= sa['stride']
             self.feature_info += [dict(num_chs=prev_chs, reduction=curr_stride, module=f'stages.{i}')]
