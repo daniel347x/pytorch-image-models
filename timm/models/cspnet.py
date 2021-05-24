@@ -483,10 +483,8 @@ class CspNetTiny(nn.Module):
         x = self.stem(x)
         features = []
         for i in range(3):
-            print(f'Entering looping stages: {i}')
-            x = self.stages(x)
+            x = self.stages[i](x)
             features.append(x)
-            print(f'Exiting looping stages: {i}')
         return features
 
     def forward(self, x):
