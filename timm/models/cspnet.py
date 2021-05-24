@@ -129,12 +129,12 @@ model_cfgs = dict(
     cspdarknet53yolo=dict(
         stem=dict(out_chs=32, kernel_size=3, stride=1, pool=''),
         stage=dict(
-            out_chs=(64, 128, 256),
-            depth=(1, 4, 4),
-            stride=(2,) * 3,
-            exp_ratio=(2.,) + (1.,) * 2,
-            bottle_ratio=(0.5,) + (1.0,) * 2,
-            block_ratio=(1.,) + (0.5,) * 2,
+            out_chs=(32, 64, 64, 64),
+            depth=(1, 4, 4, 4),
+            stride=(2,) * 4,
+            exp_ratio=(2.,) + (1.,) * 3,
+            bottle_ratio=(0.5,) + (1.0,) * 3,
+            block_ratio=(1.,) + (0.5,) * 3,
             down_growth=True,
         )
     ),
@@ -361,7 +361,7 @@ class CspNet(nn.Module):
     """
 
     def __init__(self, cfg, in_chans=1, num_classes=1000, output_stride=32, global_pool='avg', drop_rate=0.,
-                 act_layer=nn.LeakyReLU, norm_layer=nn.BatchNorm2d, aa_layer=None, drop_path_rate=0.,
+                 act_layer=nn.LeakyReLU, norm_layer=nn.BatchNorm2d, aa_layer=None, drop_path_rate=0.01,
                  zero_init_last_bn=True, stage_fn=CrossStage, block_fn=ResBottleneck):
         super().__init__()
         self.num_classes = num_classes
@@ -440,7 +440,7 @@ class CspNetTiny(nn.Module):
         self.num_classes = num_classes
         self.drop_rate = drop_rate
         assert output_stride in (8, 16, 32)
-        layer_args = dict(act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer)
+        layer_args = dict(act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer, attn_layer=True)
 
         # Construct the stem
         self.stem, stem_feat_info = create_stem(in_chans, **cfg['stem'], **layer_args)
