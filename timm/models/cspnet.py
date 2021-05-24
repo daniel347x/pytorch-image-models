@@ -418,7 +418,7 @@ class CspNetTiny(nn.Module):
 
     def __init__(self, cfg, in_chans=3, num_classes=1000, output_stride=32, global_pool='avg', drop_rate=0.,
                  act_layer=nn.LeakyReLU, norm_layer=nn.BatchNorm2d, aa_layer=None, drop_path_rate=0.,
-                 zero_init_last_bn=True, stage_fn=CrossStage, block_fn=ResBottleneck):
+                 zero_init_last_bn=True, stage_fn=CrossStage, block_fn=ResBottleneck, pretrained=False):
         super().__init__()
         self.num_classes = num_classes
         self.drop_rate = drop_rate
