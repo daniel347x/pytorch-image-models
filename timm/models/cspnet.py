@@ -28,7 +28,7 @@ __all__ = ['CspNet']  # model_registry will add each entrypoint fn to this
 def _cfg(url='', **kwargs):
     return {
         'url': url,
-        'num_classes': 1000, 'input_size': (3, 256, 256), 'pool_size': (8, 8),
+        'num_classes': 0, 'input_size': (1, 256, 192), 'pool_size': (8, 8),
         'crop_pct': 0.887, 'interpolation': 'bilinear',
         'mean': IMAGENET_DEFAULT_MEAN, 'std': IMAGENET_DEFAULT_STD,
         'first_conv': 'stem.conv1.conv', 'classifier': 'head.fc',
@@ -439,7 +439,7 @@ class CspNetTiny(nn.Module):
         layer_args = dict(act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer)
 
         # Construct the stem
-        print(f'***\nCalling create_stem with in_chans {in_chans}\n***')
+        # print(f'***\nCalling create_stem with in_chans {in_chans}\n***')
         self.stem, stem_feat_info = create_stem(in_chans, **cfg['stem'], **layer_args)
         self.feature_info = [stem_feat_info]
         prev_chs = stem_feat_info['num_chs']
@@ -486,6 +486,7 @@ class CspNetTiny(nn.Module):
 
 def _create_cspnet(variant, pretrained=False, **kwargs):
     cfg_variant = variant.split('_')[0]
+    # print(f'***\nCalling build_model_with_cfg with kwargs {kwargs}\n***')
     return build_model_with_cfg(
         CspNetTiny, variant, pretrained,
         default_cfg=default_cfgs[variant],
@@ -538,5 +539,5 @@ def darknet53(pretrained=False, **kwargs):
 @register_model
 def cspdarknet53_yolo(pretrained=False, **kwargs):
     norm_layer = get_norm_act_layer('iabn')
-    print(f'***\nCreating CSPNet with kwargs {kwargs}\n***')
+    # print(f'***\nCreating CSPNet with kwargs {kwargs}\n***')
     return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)

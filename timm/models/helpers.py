@@ -416,6 +416,8 @@ def build_model_with_cfg(
         kwargs_filter (Optional[Tuple]): kwargs to filter before passing to model
         **kwargs: model args passed through to model __init__
     """
+
+    # print(f'***\nEntering build_model_with_cfg with kwargs {kwargs}\n***')
     pruned = kwargs.pop('pruned', False)
     features = False
     feature_cfg = feature_cfg or {}
@@ -431,7 +433,7 @@ def build_model_with_cfg(
             feature_cfg['out_indices'] = kwargs.pop('out_indices')
 
     # Build the model
-    print(f'***\nInstantiating model with model_cls {model_cls}, kwargs {kwargs}, model_cfg {model_cfg}\n***')
+    # print(f'***\nInstantiating model with model_cls {model_cls}, kwargs {kwargs}, model_cfg {model_cfg}\n***')
     model = model_cls(**kwargs) if model_cfg is None else model_cls(cfg=model_cfg, **kwargs)
     model.default_cfg = default_cfg
 
