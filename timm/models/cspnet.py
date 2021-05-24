@@ -151,7 +151,6 @@ def create_stem(
     in_c = in_chans
     for i, out_c in enumerate(out_chs):
         conv_name = f'conv{i + 1}'
-        # print(f'***\nCreating ConvBnAct with in_c {in_c}, out_c {out_c}\n***')
         stem.add_module(conv_name, ConvBnAct(
             in_c, out_c, kernel_size, stride=stride if i == 0 else 1,
             act_layer=act_layer, norm_layer=norm_layer))
@@ -278,7 +277,7 @@ class CrossStage(nn.Module):
         self.conv_transition = ConvBnAct(exp_chs, out_chs, kernel_size=1, **conv_kwargs)
 
     def forward(self, x):
-        print(f'***\nEntering CrossStage with shape {x.shape}\n***')
+        # print(f'***\nEntering CrossStage with shape {x.shape}\n***')
         if self.conv_down is not None:
             x = self.conv_down(x)
         x = self.conv_exp(x)
@@ -287,7 +286,7 @@ class CrossStage(nn.Module):
         xb = self.blocks(xb)
         xb = self.conv_transition_b(xb).contiguous()
         out = self.conv_transition(torch.cat([xs, xb], dim=1))
-        print(f'***\nExiting CrossStage with shape {out.shape}\n***')
+        # print(f'***\nExiting CrossStage with shape {out.shape}\n***')
         return out
 
 
@@ -444,7 +443,6 @@ class CspNetTiny(nn.Module):
         layer_args = dict(act_layer=act_layer, norm_layer=norm_layer, aa_layer=aa_layer)
 
         # Construct the stem
-        # print(f'***\nCalling create_stem with in_chans {in_chans}\n***')
         self.stem, stem_feat_info = create_stem(in_chans, **cfg['stem'], **layer_args)
         self.feature_info = [stem_feat_info]
         prev_chs = stem_feat_info['num_chs']
@@ -496,7 +494,6 @@ class CspNetTiny(nn.Module):
 
 def _create_cspnet(variant, pretrained=False, **kwargs):
     cfg_variant = variant.split('_')[0]
-    # print(f'***\nCalling build_model_with_cfg with kwargs {kwargs}\n***')
     return build_model_with_cfg(
         CspNetTiny, variant, pretrained,
         default_cfg=default_cfgs[variant],
@@ -549,5 +546,4 @@ def darknet53(pretrained=False, **kwargs):
 @register_model
 def cspdarknet53_yolo(pretrained=False, **kwargs):
     norm_layer = get_norm_act_layer('iabn')
-    # print(f'***\nCreating CSPNet with kwargs {kwargs}\n***')
     return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
