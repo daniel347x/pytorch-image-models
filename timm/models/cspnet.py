@@ -125,7 +125,7 @@ model_cfgs = dict(
             block_ratio=(1.,) * 5,
         )
     ),
-    cspdarknet53_modified=dict(
+    cspdarknet53yolo=dict(
         stem=dict(out_chs=32, kernel_size=3, stride=1, pool=''),
         stage=dict(
             out_chs=(64, 128, 256),
@@ -535,4 +535,4 @@ def darknet53(pretrained=False, **kwargs):
 @register_model
 def cspdarknet53_yolo(pretrained=False, **kwargs):
     norm_layer = get_norm_act_layer('iabn')
-    return _create_cspnet('cspdarknet53_modified', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
+    return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
