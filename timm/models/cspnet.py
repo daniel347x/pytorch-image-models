@@ -478,14 +478,14 @@ class CspNetTiny(nn.Module):
                     m.zero_init_last_bn()
 
     def forward_features(self, x):
-        # print(f'***\nINCOMING: x.shape {x.shape}\n***')
+        print(f'***\nINCOMING: x.shape {x.shape}\n***')
         x = self.stem(x)
-        # print(f'***\nSTEM output: x.shape {x.shape}\n***')
+        print(f'***\nSTEM output: x.shape {x.shape}\n***')
         features = []
         for i in range(4):
-            # print(f'***\nSTAGE {i} INPUT: x.shape {x.shape}\n***')
+            print(f'***\nSTAGE {i} INPUT: x.shape {x.shape}\n***')
             x = self.stages[i](x)
-            # print(f'***\nSTAGE {i} OUTPUT: x.shape {x.shape}\n***')
+            print(f'***\nSTAGE {i} OUTPUT: x.shape {x.shape}\n***')
             features.append(x)
         return features
 
