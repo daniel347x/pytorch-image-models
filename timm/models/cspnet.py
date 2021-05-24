@@ -50,6 +50,7 @@ default_cfgs = {
         url='https://github.com/rwightman/pytorch-image-models/releases/download/v0.1-weights/cspdarknet53_ra_256-d05c7c21.pth'),
     'cspdarknet53_iabn': _cfg(url=''),
     'darknet53': _cfg(url=''),
+    'cspdarknet53yolo': _cfg(url=''),
 }
 
 
