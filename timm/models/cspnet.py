@@ -142,7 +142,7 @@ model_cfgs = dict(
 
 
 def create_stem(
-        in_chans=3, out_chs=32, kernel_size=3, stride=2, pool='',
+        in_chans=1, out_chs=32, kernel_size=3, stride=2, pool='',
         act_layer=None, norm_layer=None, aa_layer=None):
     stem = nn.Sequential()
     if not isinstance(out_chs, (tuple, list)):
@@ -355,7 +355,7 @@ class CspNet(nn.Module):
     darknet impl. I did it this way for simplicity and less special cases.
     """
 
-    def __init__(self, cfg, in_chans=3, num_classes=1000, output_stride=32, global_pool='avg', drop_rate=0.,
+    def __init__(self, cfg, in_chans=1, num_classes=1000, output_stride=32, global_pool='avg', drop_rate=0.,
                  act_layer=nn.LeakyReLU, norm_layer=nn.BatchNorm2d, aa_layer=None, drop_path_rate=0.,
                  zero_init_last_bn=True, stage_fn=CrossStage, block_fn=ResBottleneck):
         super().__init__()
