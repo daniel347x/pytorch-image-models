@@ -129,12 +129,12 @@ model_cfgs = dict(
     cspdarknet53yolo=dict(
         stem=dict(out_chs=32, kernel_size=3, stride=1, pool=''),
         stage=dict(
-            out_chs=(32, 64, 64, 64),
-            depth=(1, 4, 4, 4),
-            stride=(2,) * 4,
-            exp_ratio=(2.,) + (1.,) * 3,
-            bottle_ratio=(0.5,) + (1.0,) * 3,
-            block_ratio=(1.,) + (0.5,) * 3,
+            out_chs=(32, 64, 64),
+            depth=(1, 4, 4),
+            stride=(2,) * 3,
+            exp_ratio=(2.,) + (1.,) * 2,
+            bottle_ratio=(0.5,) + (1.0,) * 2,
+            block_ratio=(1.,) + (0.5,) * 2,
             down_growth=True,
         )
     ),
@@ -478,14 +478,14 @@ class CspNetTiny(nn.Module):
                     m.zero_init_last_bn()
 
     def forward_features(self, x):
-        print(f'***\nINCOMING: x.shape {x.shape}\n***')
+        print(f'***\nSTAGE 0 INPUT: x.shape {x.shape}\n***')
         x = self.stem(x)
-        print(f'***\nSTEM output: x.shape {x.shape}\n***')
-        features = []
-        for i in range(4):
-            print(f'***\nSTAGE {i} INPUT: x.shape {x.shape}\n***')
+        print(f'***\nSTAGE 0 OUTPUT: x.shape {x.shape}\n***')
+        features = [x]
+        for i in range(3):
+            print(f'***\nSTAGE {i+1} INPUT: x.shape {x.shape}\n***')
             x = self.stages[i](x)
-            print(f'***\nSTAGE {i} OUTPUT: x.shape {x.shape}\n***')
+            print(f'***\nSTAGE {i+1} OUTPUT: x.shape {x.shape}\n***')
             features.append(x)
         return features
 
