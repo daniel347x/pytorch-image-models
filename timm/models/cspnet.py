@@ -129,7 +129,7 @@ model_cfgs = dict(
     cspdarknet53yolo=dict(
         stem=dict(out_chs=32, kernel_size=3, stride=1, pool=''),
         stage=dict(
-            out_chs=(32, 64, 64),
+            out_chs=(16, 32, 32),
             depth=(1, 4, 4),
             stride=(2,) * 3,
             exp_ratio=(2.,) + (1.,) * 2,
