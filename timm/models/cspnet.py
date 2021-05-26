@@ -548,5 +548,6 @@ def darknet53(pretrained=False, **kwargs):
 
 @register_model
 def cspdarknet53_yolo(pretrained=False, **kwargs):
-    norm_layer = get_norm_act_layer('iabn')
-    return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
+    # norm_layer = get_norm_act_layer('iabn')
+    # return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
+    return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, **kwargs)
