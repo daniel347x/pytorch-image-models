@@ -152,8 +152,8 @@ def create_stem(
     for i, out_c in enumerate(out_chs):
         conv_name = f'conv{i + 1}'
         stem.add_module(conv_name, ConvBnAct(
-            in_c, out_c, kernel_size=5 if i==0 else kernel_size, stride=stride if i == 0 else 1,
-            # in_c, out_c, kernel_size, stride=stride if i == 0 else 1,
+            # in_c, out_c, kernel_size=5 if i==0 else kernel_size, stride=stride if i == 0 else 1,
+            in_c, out_c, kernel_size, stride=stride if i == 0 else 1,
             act_layer=act_layer, norm_layer=norm_layer))
         in_c = out_c
         last_conv = conv_name
@@ -548,7 +548,7 @@ def darknet53(pretrained=False, **kwargs):
 
 @register_model
 def cspdarknet53_yolo(pretrained=False, **kwargs):
-    # norm_layer = get_norm_act_layer('iabn')
-    # return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
+    norm_layer = get_norm_act_layer('iabn')
+    return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, norm_layer=norm_layer, **kwargs)
 
-    return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, **kwargs)
+    # return _create_cspnet('cspdarknet53yolo', pretrained=pretrained, block_fn=DarkBlock, **kwargs)
